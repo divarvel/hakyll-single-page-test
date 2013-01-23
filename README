@@ -1,0 +1,8 @@
+README
+======
+
+This is just a test to see how easy it is to generate single pages sites with
+Hakyll.
+
+I've tried to re-create http://www.eklaweb.com in a modular way (no textual
+content in the HTML).
