@@ -43,6 +43,7 @@ main = hakyll $ do
             page <- loadAndApplyTemplate "templates/default.html" (indexContext t r p f) indexTexts
             makeItem $ itemBody page
 
+sectionCompiler :: SectionParams -> Compiler (Item String)
 sectionCompiler sp = let
         sectionContext es =
             constField (elementsFieldName sp) es `mappend`
@@ -56,6 +57,7 @@ sectionCompiler sp = let
         section <- applyTemplate sectionTemplate (sectionContext elementsList) sectionData
         return section
 
+sectionDefaultParams :: String -> SectionParams
 sectionDefaultParams sectionName = SectionParams
     { elementPattern = fromGlob ("blocks/" ++ sectionName ++ "/*.md")
     , elementTemplateId = fromFilePath ("templates/blocks/" ++ sectionName ++ ".html")
@@ -71,9 +73,10 @@ indexContext t r p f =
         fields = mconcat $ zipWith constField names bodies
     in fields `mappend` defaultContext
 
-metadataContext :: String -> Context a
+metadataContext :: String -> Context String
 metadataContext name = field name $ \item -> do
     metadata <- getMetadata (itemIdentifier item)
     return $ fromMaybe name $ M.lookup name metadata
 
+blockContext:: Context String
 blockContext = (metadataContext "image") `mappend` defaultContext
