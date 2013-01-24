@@ -51,7 +51,7 @@ sectionCompiler sp = let
     in do
         elements <- loadAll $ elementPattern sp
         elementTemplate <- loadBody $ elementTemplateId sp
-        elementsList <- applyTemplateList elementTemplate blockContext elements
+        elementsList <- applyTemplateList elementTemplate defaultContext elements
         sectionTemplate <- loadBody $ sectionTemplateId sp
         sectionData <- load $ sectionId sp
         section <- applyTemplate sectionTemplate (sectionContext elementsList) sectionData
@@ -73,10 +73,3 @@ indexContext t r p f =
         fields = mconcat $ zipWith constField names bodies
     in fields `mappend` defaultContext
 
-metadataContext :: String -> Context String
-metadataContext name = field name $ \item -> do
-    metadata <- getMetadata (itemIdentifier item)
-    return $ fromMaybe name $ M.lookup name metadata
-
-blockContext:: Context String
-blockContext = (metadataContext "image") `mappend` defaultContext
