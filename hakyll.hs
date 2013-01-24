@@ -43,7 +43,7 @@ main = hakyll $ do
             page <- loadAndApplyTemplate "templates/default.html" (indexContext t r p f) indexTexts
             makeItem $ itemBody page
 
-sectionCompiler :: SectionParams -> Compiler (Item String)
+sectionCompiler :: SectionParams -> Compiler String
 sectionCompiler sp = let
         sectionContext es =
             constField (elementsFieldName sp) es `mappend`
@@ -55,7 +55,7 @@ sectionCompiler sp = let
         sectionTemplate <- loadBody $ sectionTemplateId sp
         sectionData <- load $ sectionId sp
         section <- applyTemplate sectionTemplate (sectionContext elementsList) sectionData
-        return section
+        return $ itemBody section
 
 sectionDefaultParams :: String -> SectionParams
 sectionDefaultParams sectionName = SectionParams
@@ -66,9 +66,9 @@ sectionDefaultParams sectionName = SectionParams
     , elementsFieldName = "elements"
     }
 
-indexContext :: Item String -> Item String -> Item String -> Item String -> Context String
+indexContext :: String -> String -> String -> String -> Context String
 indexContext t r p f =
-    let bodies = map itemBody [t, r, p, f]
+    let bodies = [t, r, p, f]
         names = ["technos", "refs", "people", "formations"]
         fields = mconcat $ zipWith constField names bodies
     in fields `mappend` defaultContext
